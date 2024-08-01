@@ -42,6 +42,7 @@
 3. 服务器架构：x86_64
 4. 内存要求：建议可用内存在 1GB 以上
 5. 浏览器要求：请使用 Chrome、FireFox、IE10+、Edge等现代浏览器
+6. 部署完成后需要在安全组中开放端口才可以访问1Panel面板
 ### 操作步骤
 1. 单击[部署链接](https://computenest.console.aliyun.com/service/instance/create/cn-hangzhou?type=user&ServiceId=service-4b2eae361ae8493d851a)，进入服务实例部署界面。
 2. 选择目标ECS实例，点击下一步：确认订单。
@@ -52,11 +53,17 @@
 
    <img src="2.jpg" width="1400" align="bottom"/>
 
-4. 服务实例创建成功后，进入服务实例详情页。在概览页可获取1Panel面板登录信息。 
+4. 服务实例创建成功后，进入服务实例详情页。在概览页可获取1Panel面板登录信息，从链接上可以看到1Panel使用的端口。 
    
    <img src="3.jpg" width="1400" align="bottom"/>
 
-5. 点击外网面板地址，登录1Panel面板。
+5. 在访问面板之前，需要在ECS实例的安全组中开放端口。从ECS实例详情页找到安全组，添加入方向的端口放行规则。
+
+   <img src="7.png" width="1400" align="bottom"/>
+
+   <img src="8.png" width="1400" align="bottom"/>
+
+6. 在服务实例详情页点击外网面板地址，登录1Panel面板。
    
    <img src="4.jpg" width="1400" align="bottom"/>
 
