@@ -1,0 +1,129 @@
+Service:
+  RegionId: cn-hangzhou
+  DeployType: ros
+  DeployMetadata:
+    ServiceInstanceNameRule:
+      Prefix: 1panel-
+    SupplierDeployMetadata:
+      ArtifactRelation:
+        'centos_7':
+          ArtifactId: ${Artifact.EcsImage.ArtifactId}
+          ArtifactVersion: ${Artifact.EcsImage.ArtifactVersion}
+    TemplateConfigs:
+      - Name: 选择ECS实例（Linux）
+        Url: 'ros_templates/template-select-ecs.yaml'
+      - Name: 新建ECS实例
+        Url: 'ros_templates/template-create-ecs.yaml'
+  ServiceType: private
+  ServiceInfo:
+    Locale: zh-CN
+    ShortDescription: 1Panel 是新一代的 Linux 服务器运维管理面板，用户可以通过 Web 图形界面轻松管理 Linux 服务器，实现主机监控、文件管理、数据库管理、容器管理等功能。
+    Image: 'resources/icons/service_logo.jpg'
+Artifact:
+  EcsImage:
+    ArtifactType: EcsImage
+    ArtifactName: panel_one
+    Description: 1panel image
+    ArtifactProperty:
+      RegionId: ${ImageBuilder.EcsImage.RegionId}
+      ImageId: ${ImageBuilder.EcsImage.SourceImageId}
+ImageBuilder:
+  EcsImage:
+    RegionId: ap-southeast-1
+    # 使用最新的LTS版本Alibaba Cloud Linux
+    SourceImageId: aliyun_3_x64_20G_alibase_20240819.vhd
+    SystemDiskSize: 40
+    InstanceType: ecs.c6.large
+    InternetMaxBandwidthOut: 10
+    CommandType: RunShellScript
+    Timeout: 10800
+    CommandContent: |-
+        #!/bin/bash
+        # 安装docker
+        yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+        yum makecache
+        yum install -y curl git docker-ce expect
+        mkdir -p /etc/docker/
+        echo '{
+            "default-address-pools": [
+                {
+                    "base": "10.255.0.0/16",
+                    "size": 24
+                }
+            ]
+        }' > /etc/docker/daemon.json
+
+        prefixChinaRegion="cn-"
+        region=$(curl -s http://100.100.100.200/latest/meta-data/region-id)
+
+        if [[ ${region} == ${prefixChinaRegion}* && ${region} != "cn-hongkong" ]]; then
+          echo '{
+              "default-address-pools": [
+                  {
+                      "base": "10.255.0.0/16",
+                      "size": 24
+                  }
+              ],
+              "registry-mirrors": [
+                  "https://mirrors-ssl.aliyuncs.com/"
+              ]
+          }' > /etc/docker/daemon.json
+        fi
+
+        sudo systemctl enable --now docker.socket
+        sudo systemctl enable --now docker.service
+
+        # 安装1panel
+        cat > /root/install_1panel.sh << 'EOF'
+        #!/usr/bin/expect -f
+
+        set timeout 300  ;# 设置全局超时时间（单位：秒）
+
+        # 使用 spawn 启动命令，确保能捕获后续交互
+        spawn bash -c "curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sh quick_start.sh"
+
+        # 处理所有交互步骤
+        expect {
+            # 选择语言（假设需输入2选择中文）
+            "Enter the number corresponding to your language choice:" {
+                send "2\r"
+                exp_continue
+            }
+
+            # 设置安装目录（直接回车使用默认值）
+            "设置1Panel安装目录 (默认为/opt):" {
+                send "\r"
+                exp_continue
+            }
+
+            # 设置端口（必须输入 8090，非随机值）
+            "设置1Panel端口" {
+                send "8090\r"
+                exp_continue
+            }
+
+            # 设置安全入口（直接回车使用随机默认值）
+            "设置1Panel安全入口" {
+                send "\r"
+                exp_continue
+            }
+
+            # 设置面板用户（直接回车使用随机默认值）
+            "设置1Panel面板用户" {
+                send "\r"
+                exp_continue
+            }
+
+            # 设置面板密码（直接回车使用随机默认值）
+            "设置1Panel面板密码，设置后按回车键继续" {
+                send "\r"
+                exp_continue
+            }
+
+        }
+
+        EOF
+
+        chmod +x install_1panel.sh
+        expect install_1panel.sh
+        rm -rf install_1panel.sh

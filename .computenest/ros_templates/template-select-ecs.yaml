@@ -1,0 +1,112 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Description:
+  zh-cn: 单台ECS实例安装 1panel Linux 面板 v1.10.9-lts
+Parameters:
+  InstanceId:
+    Type: String
+    Label:
+      en: Select Running ECS Instance
+      zh-cn: 选择运行中的ECS实例
+    Description:
+      en: >-
+        <ul>Requirements:<ol>
+        <li>ECS instances can access the public network</li>
+        <li>Operating system: Support mainstream Linux distributions (based on Debian/RedHat, including domestic operating systems);</li>
+        <li>Server architecture: x86_64;</li>
+        <li>Memory requirements: It is recommended that the available memory is more than 1GB;</li>
+        <li>Browser requirements: Please use modern browsers such as Chrome, FireFox, IE10+, Edge, etc. </li>
+        </ol><ul>
+      zh-cn: >-
+        <ul>安装前请确保您的ECS实例符合安装条件：:<ol>
+        <li>ECS实例可以访问公网</li>
+        <li>操作系统：支持主流 Linux 发行版本（基于 Debian / RedHat，包括国产操作系统）</li>
+        <li>服务器架构：x86_64</li>
+        <li>内存要求：建议可用内存在 1GB 以上</li>
+        <li>浏览器要求：请使用 Chrome、FireFox、IE10+、Edge等现代浏览器</li>
+        </ol><ul>
+    AssociationProperty: ALIYUN::ECS::Instance::InstanceId
+    AssociationPropertyMetadata:
+      OnlyShowSelector: true
+      RegionId: ${RegionId}
+      Status: Running
+      DisabledStatus: true
+      PackageName: ACS-Extension-1Panel-1853370294850618
+Resources:
+  Execution:
+    Type: 'ALIYUN::OOS::Execution'
+    Properties:
+      ResourceOptions:
+        CancelOnDelete: true
+      TemplateName: "ACS-ECS-BulkyConfigureOOSPackageWithTemporaryURL"
+      SafetyCheck: Skip
+      Parameters:
+        regionId:
+            Ref: ALIYUN::Region
+        action: "install"
+        packageName: "ACS-Extension-1Panel-1853370294850618"
+        targets:
+          Type: ResourceIds
+          ResourceIds:
+            - Ref: InstanceId
+          RegionId:
+            Ref: ALIYUN::Region
+Outputs:
+  外网面板地址:
+    Description:
+      zh-cn: 外网面板地址
+    Value:
+      Fn::GetJsonValue:
+        - publicUrl
+        - Fn::Jq:
+          - First
+          - ".configurationOutput[0].InstanceResult[0].PackageResult"
+          - Fn::GetAtt:
+            - Execution
+            - Outputs
+  内网面板地址:
+    Description:
+      zh-cn: 内网面板地址
+    Value:
+      Fn::GetJsonValue:
+        - privateUrl
+        - Fn::Jq:
+          - First
+          - ".configurationOutput[0].InstanceResult[0].PackageResult"
+          - Fn::GetAtt:
+            - Execution
+            - Outputs
+  初始用户名:
+    Description:
+      zh-cn: 初始用户名
+    Value:
+      Fn::GetJsonValue:
+        - username
+        - Fn::Jq:
+          - First
+          - ".configurationOutput[0].InstanceResult[0].PackageResult"
+          - Fn::GetAtt:
+            - Execution
+            - Outputs
+  初始密码:
+    NoEcho: true
+    Description:
+      zh-cn: 初始密码
+    Value:
+      Fn::GetJsonValue:
+        - password
+        - Fn::Jq:
+          - First
+          - ".configurationOutput[0].InstanceResult[0].PackageResult"
+          - Fn::GetAtt:
+            - Execution
+            - Outputs
+  部署日志:
+    Description:
+      zh-cn: 部署日志
+    Value:
+      Fn::Jq:
+        - First
+        - 'if .configurationOutput[0].InstanceResult[0].PackageResult == null then .commandOutput[0].InstanceResult[0].PackageResult else "N/A" end'
+        - Fn::GetAtt:
+          - Execution
+          - Outputs
