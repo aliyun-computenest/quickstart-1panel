@@ -22,7 +22,7 @@ Service:
     Image: 'resources/icons/service_logo.jpg'
     Softwares:
     - Name: 1Panel
-      Version: v2.2.2
+      Version: v2.2.3
 Artifact:
   EcsImage:
     ArtifactType: EcsImage
