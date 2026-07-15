@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="计算巢是阿里云开放给企业应用服务商的服务管理平台。服务商能够在计算巢上发布私有化部署服务，为其客户提供云上软件一键部署的能力；同时也支持全托管模式的服务，赋能服务商托管其客户资源。">
+  <title>Quickly deploy 1Panel operation and maintenance panel - Aliyun 计算巢 x Demo</title>
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+  <link rel="stylesheet" href="../css/theme.css">
+  
+
+  
+
+  
+  
+
+  
+    <script src="../search/main.js"></script>
+  
+
+  
+
+  <script src="../js/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="nav-inner">
+        <div class="logo">
+          <img src="./img/logo-2x.png">
+        </div>
+        <div class="nav-list">
+          <ul>
+          
+              <li><a href="#quickly-deploy-1panel-operation-and-maintenance-panel">Quickly deploy 1Panel operation and maintenance panel</a></li>
+              
+                  <li><a href="#overview">Overview</a></li>
+                  
+              
+                  <li><a href="#billing-description">Billing Description</a></li>
+                  
+              
+                  <li><a href="#deployment-architecture">Deployment Architecture</a></li>
+                  
+              
+                  <li><a href="#permissions-required-for-ram-accounts">Permissions required for RAM accounts</a></li>
+                  
+              
+                  <li><a href="#select-ecs-instance-deployment">Select ECS instance deployment</a></li>
+                  
+                      <li class="li-h3"><a href="#prerequisites">Prerequisites</a></li>
+                  
+                      <li class="li-h3"><a href="#operation-steps">Operation steps</a></li>
+                  
+              
+                  <li><a href="#new-ecs-instance-deployment">New ECS instance deployment</a></li>
+                  
+              
+          
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="content theme-github">
+      
+      <div class="content-inner">        
+        
+        <h1 id="quickly-deploy-1panel-operation-and-maintenance-panel">Quickly deploy 1Panel operation and maintenance panel</h1>
+<h2 id="overview">Overview</h2>
+<p>1Panel is a new generation of Linux server operation and maintenance management panel. Users can easily manage Linux servers through a Web graphical interface, realizing host monitoring, file management, database management, container management and other functions.</p>
+<p>1Panel Official website:<a href="https://www.fit2cloud.com/1panel/index.html">https://www.fit2cloud.com/1panel/index.html</a></p>
+<h2 id="billing-description">Billing Description</h2>
+<p>The cost of the 1Panel panel on the calculation nest is mainly related:</p>
+<p>-Selected vCPU and memory specifications
+-Disk Capacity
+-public network bandwidth</p>
+<p>Billing method: Pay-As-You-Go (hourly)</p>
+<p>The estimated cost can be seen in real time when the instance is created.</p>
+<h2 id="deployment-architecture">Deployment Architecture</h2>
+<p>1Panel Panel Community Edition is a stand-alone deployment architecture.</p>
+<h2 id="permissions-required-for-ram-accounts">Permissions required for RAM accounts</h2>
+<p>The 1Panel service needs to access and create resources such as ECS and VPC. If you use a RAM user to create a service instance, you need to add the corresponding resource permissions to the account of the RAM user before creating the service instance. For details about how to add RAM permissions, see <a href="https://help.aliyun.com/document_detail/121945.html">Authorize RAM users</a>
+. The required permissions are shown in the following table.</p>
+<table>
+<thead>
+<tr>
+<th>Permission policy name</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AliyunECSFullAccess</td>
+<td>Permissions for managing ECS instances</td>
+</tr>
+<tr>
+<td>AliyunVPCFullAccess</td>
+<td>Permissions for managing a VPC</td>
+</tr>
+<tr>
+<td>AliyunROSFullAccess</td>
+<td>Manage permissions for Resource Orchestration Service (ROS)</td>
+</tr>
+<tr>
+<td>AliyunComputeNestUserFullAccess</td>
+<td>Manage user-side permissions for the compute nest service (ComputeNest)</td>
+</tr>
+<tr>
+<td>AliyunCloudMonitorFullAccess</td>
+<td>Permissions to manage CloudMonitor (CloudMonitor)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="select-ecs-instance-deployment">Select ECS instance deployment</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ol>
+<li>The ECS instance can access the public network</li>
+<li>Operating system: Support mainstream Linux distributions (based on Debian / RedHat, including domestic operating systems)</li>
+<li>Server Architecture: x86_64</li>
+<li>Memory Requirements: It is recommended to have more than 1GB of available memory.</li>
+<li>Browser Requirements: Please use Chrome, FireFox, IE10, Edge and other modern browsers</li>
+<li>After the deployment is completed, you need to open the port in the security group to access the 1Panel panel.</li>
+</ol>
+<h3 id="operation-steps">Operation steps</h3>
+<ol>
+<li>Click <a href="https://computenest.console.aliyun.com/service/instance/create/cn-hangzhou?type=user&amp;ServiceId=service-4b2eae361ae8493d851a">Deployment Link</a> to enter the service instance deployment interface.</li>
+<li>Select the target ECS instance and click Next: Confirm Order.</li>
+</ol>
+<p><img src="images-en/1.jpg" width="1400" align="bottom"/></p>
+<ol>
+<li>Click Create Now and wait for the service instance to be created.</li>
+</ol>
+<p><img src="images-en/2.jpg" width="1400" align="bottom"/></p>
+<ol>
+<li>After the service instance is successfully created, go to the service instance details page. The login information of 1Panel panel can be obtained on the overview page, and the port used by 1Panel can be seen from the link.</li>
+</ol>
+<p><img src="images-en/3.jpg" width="1400" align="bottom"/></p>
+<ol>
+<li>Before accessing the panel, you need to open ports in the security group of the ECS instance. Find the security group on the ECS instance details page and add the port release rule in the inbound direction.</li>
+</ol>
+<p><img src="images-en/7.png" width="1400" align="bottom"/></p>
+<p><img src="images-en/8.png" width="1400" align="bottom"/></p>
+<ol>
+<li>Click the address of the external network panel on the service instance details page and log in to the 1Panel panel.</li>
+</ol>
+<p><img src="images-en/4.jpg" width="1400" align="bottom"/></p>
+<h2 id="new-ecs-instance-deployment">New ECS instance deployment</h2>
+<ol>
+<li>Click <a href="https://computenest.console.aliyun.com/service/instance/create/cn-hangzhou?type=user&amp;ServiceId=service-4b2eae361ae8493d851a">Deployment Link</a> to enter the service instance deployment interface.</li>
+<li>Select the new ECS instance and configure the parameters according to the interface prompts. After the configuration is completed, click Next: Confirm Order.</li>
+</ol>
+<p><img src="images-en/5.jpg" width="1400" align="bottom"/></p>
+<ol>
+<li>Click Create Now and wait for the service instance to be created.</li>
+</ol>
+<p><img src="images-en/6.jpg" width="1400" align="bottom"/></p>
+<ol>
+<li>After the service instance is successfully created, go to the service instance details page. On the overview page, you can obtain the login information of the 1Panel panel. Click the address of the external network panel to log in to the 1Panel panel.</li>
+</ol>
+<p><img src="images-en/4.jpg" width="1400" align="bottom"/></p>
+        
+      </div>
+
+      <div class="copyrights">© 2009-2022 Aliyun.com 版权所有</div>
+    </div>
+  </div>
+  
+  <!--
+  MkDocs version      : 1.6.1
+  Docs Build Date UTC : 2026-07-15 01:06:09.525492+00:00
+  -->
+</body>
+</html>
